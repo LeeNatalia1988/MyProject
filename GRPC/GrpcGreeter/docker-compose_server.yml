@@ -1,0 +1,70 @@
+version: '3.5'
+networks:
+  server:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.6.0.0/16
+
+name: server
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "grpc_db"
+      POSTGRES_USER: "Natalia"
+      POSTGRES_PASSWORD: "1234"
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+            - '5432:5432'
+    networks:
+        server:
+            ipv4_address: 172.6.0.2
+    restart: unless-stopped
+  
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "1234"
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    ports:
+      - ${PGADMIN_PORT:-5050}:80
+    networks:
+        server:
+            ipv4_address: 172.6.0.3
+    restart: unless-stopped
+
+
+  
+  grpc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80
+      - 443
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+        server:
+            ipv4_address: 172.6.0.4
+
+volumes:
+    postgres:
+    pgadmin:
+    grpc:
+
+   

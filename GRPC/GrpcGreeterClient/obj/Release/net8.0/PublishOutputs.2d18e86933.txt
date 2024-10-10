@@ -1,0 +1,10 @@
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\GrpcGreeterClient.exe
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\GrpcGreeterClient.dll
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\GrpcGreeterClient.runtimeconfig.json
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\GrpcGreeterClient.pdb
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\Google.Protobuf.dll
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\Grpc.Core.Api.dll
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\Grpc.Net.Client.dll
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\Grpc.Net.Common.dll
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\mosal\Desktop\Собесы\Вадим\GrpcGreeterClient\bin\Release\net8.0\publish\GrpcGreeterClient.deps.json
