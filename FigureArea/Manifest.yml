@@ -1,41 +1,59 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ManifestByWeb-app
+  name: web-app
 spec:
+  replicas: 3 # Количество подов для обеспечения необходимой нагрузки, по условию.
   selector:
     matchLabels:
-      app: ManifestByWeb-app
+      app: web-app
   template:
     metadata:
       labels:
-        app: ManifestByWeb-app
+        app: web-app
     spec:
       affinity:
-        podAntiAffinity:
+        podAntiAffinity: # поды на разных нодах.
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: kubernetes.io/hostname
-          labelSelector:
-            matchLables:
-              app: ManifestByWeb-app
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - web-app
+              topologyKey: "kubernetes.io/hostname"
       containers:
-        - name: ManifestByWeb-app
-          image: ManifestByWeb-app:v1
+        - name: web-app-container
+          image: web-app # образ приложения.
           resources:
             requests:
-              memory: "128M" #величина по условию
-              cpu: "100m" #в условии нет данной величины, только 0,1CPU, взяла примерно
+              cpu: "200m" # в условии нет, взято условно.
+              memory: "128Mi" # Запрос на память.
             limits:
-              memory: "256M" #величина по условию*2 (на пиковые нагрузки при инициализации)
-              cpu: "200m" #в условии нет этой величины, взяла примерно средняя*2 (аналогично)
-          ports:
-            - containerPort: 8080
-              protocol: TCP
-          startupProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 10 #по условию 5-10 секунд
-            periodSeconds: 30
-            timeoutSeconds: 1
-            failureThreshold: 5
+              cpu: "400Mi" # Максимум, изначальный *2, взято условно.
+              memory: "256Mi" # максимум памяти, изначальный *2, взято условно
+          lifecycle:
+            # Используем readinessProbe для определения готовности пода обрабатывать запросы.
+            readinessProbe:
+              exec:
+                command:
+                  - cat
+                  - /tmp/healthy # Создается после инициализации.
+              initialDelaySeconds: 10 # Задержка перед первым пробным запуском.
+              periodSeconds: 5 # Проверяем готовность файла в строке 41 каждые 5 секунд, когда готов, то идем дальше
+          command: ["sh", "-c", "sleep 10 && touch /tmp/healthy && exec web-app"]
+      nodeSelector:
+        node-role.kubernetes.io/app: "true"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+spec:
+  type: ClusterIP
+  selector:
+    app: web-app
+  ports:
+    - port: 80
+      targetPort: 8080
